@@ -154,7 +154,7 @@ const Tag = ({
       menuItems,
       menuTitle: '',
     };
-  }, []);
+  }, [originalValue]);
 
   const textWithUpdatedCase = lowercase ? text : upperFirst(text);
 
