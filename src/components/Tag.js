@@ -14,6 +14,7 @@ import { padding } from '@rainbow-me/styles';
 const HairlineSpace = '\u200a';
 
 const PropertyActionsEnum = {
+  openURL: 'openURL',
   viewTraitOnOpensea: 'viewTraitOnOpensea',
 };
 
@@ -24,6 +25,15 @@ const viewTraitOnOpenseaAction = {
   icon: {
     iconType: 'SYSTEM',
     iconValue: 'magnifyingglass.circle.fill',
+  },
+};
+
+const openTraitURLInBrowserAction = {
+  actionKey: PropertyActionsEnum.openURL,
+  actionTitle: 'Open In Web Browser',
+  icon: {
+    iconType: 'SYSTEM',
+    iconValue: 'safari.fill',
   },
 };
 
@@ -75,6 +85,9 @@ const Tag = ({
   ...props
 }) => {
   const { colors } = useTheme();
+  const isURL =
+    typeof originalValue === 'string' &&
+    originalValue.toLowerCase().startsWith('https://');
 
   const handlePressMenuItem = useCallback(
     ({ nativeEvent: { actionKey } }) => {
@@ -87,24 +100,20 @@ const Tag = ({
             '&search[stringTraits][0][values][0]=' +
             originalValue ?? text
         );
+      } else if (actionKey === PropertyActionsEnum.openURL) {
+        const url = originalValue ?? text;
+        Linking.openURL(url);
       }
     },
     [slug, text, originalValue, title]
   );
 
-  const menuConfig = useMemo(() => {
-    return {
-      menuItems: [
-        {
-          ...viewTraitOnOpenseaAction,
-        },
-      ],
-      menuTitle: '',
-    };
-  }, []);
-
   const onPressAndroid = useCallback(() => {
     const androidContractActions = ['View All With Property'];
+
+    if (isURL) {
+      androidContractActions.push('Open In Web Browser');
+    }
 
     showActionSheetWithOptions(
       {
@@ -122,10 +131,30 @@ const Tag = ({
               '&search[stringTraits][0][values][0]=' +
               originalValue ?? text
           );
+        } else if (idx === 1) {
+          const url = originalValue ?? text;
+          Linking.openURL(url);
         }
       }
     );
   }, [slug, text, originalValue, title]);
+
+  const menuConfig = useMemo(() => {
+    const menuItems = [
+      {
+        ...viewTraitOnOpenseaAction,
+      },
+    ];
+
+    if (isURL) {
+      menuItems.push({ ...openTraitURLInBrowserAction });
+    }
+
+    return {
+      menuItems,
+      menuTitle: '',
+    };
+  }, []);
 
   const textWithUpdatedCase = lowercase ? text : upperFirst(text);
 
