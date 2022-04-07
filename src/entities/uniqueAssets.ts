@@ -61,6 +61,6 @@ export interface UniqueAsset {
 
 export interface UniqueAssetTrait {
   trait_type: string;
-  value: string | number;
+  value: string | number | null | undefined;
   display_type: string;
 }
