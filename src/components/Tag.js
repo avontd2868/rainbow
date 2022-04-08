@@ -4,6 +4,7 @@ import React from 'react';
 import { Linking } from 'react-native';
 import { ContextMenuButton } from 'react-native-ios-context-menu';
 import { magicMemo, showActionSheetWithOptions } from '../utils';
+import { Alert } from './alerts';
 import { ButtonPressAnimation } from './animations';
 import { Centered, Column } from './layout';
 import { Text as TextElement } from './text';
@@ -73,6 +74,24 @@ const Title = styled(TextElement).attrs(({ color, theme: { colors } }) => ({
   marginBottom: 1,
 });
 
+const openUrlWithWarningAlert = url => {
+  Alert({
+    buttons: [
+      {
+        onPress: () => Linking.openURL(url),
+        text: 'Open',
+      },
+      { style: 'cancel', text: 'Cancel' },
+    ],
+    message:
+      'In a moment you will be redirected to\n' +
+      url +
+      '\n' +
+      'Make sure this address is safe, if in doubt do not open it.',
+    title: 'Warning',
+  });
+};
+
 const Tag = ({
   color,
   disableMenu,
@@ -102,7 +121,7 @@ const Tag = ({
         );
       } else if (actionKey === PropertyActionsEnum.openURL) {
         const url = originalValue ?? text;
-        Linking.openURL(url);
+        openUrlWithWarningAlert(url);
       }
     },
     [slug, text, originalValue, title]
@@ -133,7 +152,7 @@ const Tag = ({
           );
         } else if (idx === 1) {
           const url = originalValue ?? text;
-          Linking.openURL(url);
+          openUrlWithWarningAlert(url);
         }
       }
     );
