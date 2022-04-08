@@ -30,7 +30,7 @@ const viewTraitOnOpenseaAction = {
 
 const openTraitURLInBrowserAction = {
   actionKey: PropertyActionsEnum.openURL,
-  actionTitle: 'Open In Web Browser',
+  actionTitle: 'Open in Web Browser',
   icon: {
     iconType: 'SYSTEM',
     iconValue: 'safari.fill',
@@ -140,14 +140,10 @@ const Tag = ({
   }, [slug, text, originalValue, title]);
 
   const menuConfig = useMemo(() => {
-    const menuItems = [
-      {
-        ...viewTraitOnOpenseaAction,
-      },
-    ];
+    const menuItems = [viewTraitOnOpenseaAction];
 
     if (isURL) {
-      menuItems.push({ ...openTraitURLInBrowserAction });
+      menuItems.push(openTraitURLInBrowserAction);
     }
 
     return {
